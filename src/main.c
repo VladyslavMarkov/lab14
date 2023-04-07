@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <dirent.h>
 #include "lib.h"
 
 /**
@@ -35,21 +36,41 @@
 - Виводимо результат на екран
 */
 
-int main()
+int main(int argc, char* argv[])
 {
-	char str[1000];
-	long int res = 0;
 	
-	printf("\nАвтор:Марков Владислав\nГрупа:КН-922Б\nНомер лабараторної роботи:13\nТема:Строки (Null-terminated C Strings)\n\n");
-	printf("Створення числа через кількість букв та чисел у строці\n\n");
+	FILE *output_file;  // = fopen(argv[1], "w");
+	DIR *input_dir;
+	struct dirent *elemets;
+	char **out_data;
 	
-	fgets(str,1000,stdin);
+	printf("\nАвтор:Марков Владислав\nГрупа:КН-922Б\nНомер лабараторної роботи:14\nТема:Строки Взаємодія з файлами\n\n");
+	printf("Вивести структуру файлів та каталогів, як це робить утиліта Linux tree.\n\n");
 	
-	res = CreateConst(str);
+	if(argc > 1)
+	{	
+		
+		if(argc != 3)
+		{
+			printf("Ви ввели некоректну кількість даних");
+			return 1;
+		}
+		
+		if(Check_Write_In_Data(argv, output_file, input_dir) == 0)
+		{
+			Create_Struct_Dir(input_dir, elemets, out_data);
+			Write_In_File(output_file, out_data);
+			
+			return 0;
+		}
+		else
+			printf("Не можливо отримати доступ до файлу або дерикторії");
+	}
+	else
+		printf("Ви не ввели ніякі дані");
 	
-	printf("Створене число:%ld", res);
 
-	return 0;
+	return 1;
 }
 
 
