@@ -4,84 +4,131 @@
 #include <check.h>
 #include <math.h>
 
-START_TEST(test_CreateConst_EasySentence)
+START_TEST(test_Check_Write_In_Data_NoArguments)
 {	
-	char test_str[] = "Я роблю домашнє завдання";
-	long int expected_res = 1578;
-	long int actual_res = CreateConst(test_str);
+	int number_arguments = 0;
+	char* arr_arguments[1];
+	int expected_result = 1;
+	int actual_result;
 	
-	ck_assert_int_eq(expected_res, actual_res);
+	actual_result = Check_Write_In_Data(number_arguments,arr_arguments);
+	
+	ck_assert_int_eq(expected_result,actual_result);
 }
 END_TEST
 
-START_TEST(test_CreateConst_HardSentence)
+START_TEST(test_Check_Write_In_Data_NoCorentEnghtArg)
 {	
-	char test_str[] = "То мати пирогів напече, то бабуся з булочками приїде.";
-	long int expected_res = 247626196;
-	long int actual_res = CreateConst(test_str);
+	int number_arguments = 2;
+	char *arr_arguments[1];
+	int expected_result = 1;
+	int actual_result;
 	
-	ck_assert_int_eq(expected_res, actual_res);
+	actual_result = Check_Write_In_Data(number_arguments,arr_arguments);
+	
+	ck_assert_int_eq(expected_result,actual_result);
+	
+	number_arguments = 4;
+	
+	actual_result = Check_Write_In_Data(number_arguments,arr_arguments);
+	
+	ck_assert_int_eq(expected_result,actual_result);
 }
 END_TEST
 
-START_TEST(test_CreateConst_SentenceWithNumber)
+START_TEST(test_Check_Write_In_Data_NoActualArg)
 {	
-	char test_str[] = "Я народився у 1999";
-	long int expected_res = 1914;
-	long int actual_res = CreateConst(test_str);
+	int number_arguments = 3;
+	char *arr_arguments[100];
 	
-	ck_assert_int_eq(expected_res, actual_res);
+	*(arr_arguments) = "0";
+	*(arr_arguments + 1) = "/home/home/home/home";
+	*(arr_arguments + 2) = "dist/text.txt";
+	
+	int expected_result = 1;
+	int actual_result;
+	
+	actual_result = Check_Write_In_Data(number_arguments,arr_arguments);
+	
+	ck_assert_int_eq(expected_result,actual_result);
+	
+	*(arr_arguments + 1) = "/home/vlad/Documents/1cours";
+	*(arr_arguments + 2) = "dir1/dir2/text.txt";
+	
+	actual_result = Check_Write_In_Data(number_arguments,arr_arguments);
+	
+	ck_assert_int_eq(expected_result,actual_result);
 }
 END_TEST
 
-START_TEST(test_CreateConst_EnglishQuestion)
+START_TEST(test_Check_Write_In_Data_TrueData)
 {	
-	char test_str[] = "Who are you?";
-	long int expected_res = 333;
-	long int actual_res = CreateConst(test_str);
+	int number_arguments = 3;
+	char *arr_arguments[100];
 	
-	ck_assert_int_eq(expected_res, actual_res);
+	*(arr_arguments) = "0";
+	*(arr_arguments + 1) = "/home/vlad/Documents/1cours";
+	*(arr_arguments + 2) = "dist/text.txt";
+	
+	int expected_result = 0;
+	int actual_result;
+	
+	actual_result = Check_Write_In_Data(number_arguments,arr_arguments);
+	
+	ck_assert_int_eq(expected_result,actual_result);
+	
 }
 END_TEST
 
-START_TEST(test_CreateConst_NoSentence)
+START_TEST(test_Write_Struct_Dir_DirFiles)
 {	
-	char test_str[] = "\0";
-	long int expected_res = 0;
-	long int actual_res = CreateConst(test_str);
+	char file[] = "dist/test_DirFiles.txt";
+	char path_to_dir[] = "test/test(DirFiles)";
+	int expected_number_elements = 5;
+	int actual_number_elements;
 	
-	ck_assert_int_eq(expected_res, actual_res);
+	actual_number_elements = Write_Struct_Dir(file,path_to_dir);
+	
+	ck_assert_int_eq(expected_number_elements,actual_number_elements);
 }
 END_TEST
 
-START_TEST(test_CreateConst_BigWord)
+START_TEST(test_Write_Struct_Dir_DirInDir)
 {	
-	char test_str[] = "Що таке паралелепіпед?";
-	long int expected_res = 2413;
-	long int actual_res = CreateConst(test_str);
+	char file[] = "dist/test_DirInDir.txt";
+	char path_to_dir[] = "test/test(DirInDir)";
+	int expected_number_elements = 30;
+	int actual_number_elements;
 	
-	ck_assert_int_eq(expected_res, actual_res);
+	actual_number_elements = Write_Struct_Dir(file,path_to_dir);
+	
+	ck_assert_int_eq(expected_number_elements,actual_number_elements);
 }
 END_TEST
 
 Suite *lab_test_suite(void)
 {
 	Suite *s;
-	TCase *tc_CreateConst;
+	TCase *Check_Write_In_Data;
+	TCase *Write_Struct_Dir;
 
-	s = suite_create("lab13");
+	s = suite_create("lab14");
 
-	tc_CreateConst = tcase_create("CreateConst");
-
-	tcase_add_test(tc_CreateConst, test_CreateConst_EasySentence);
-	tcase_add_test(tc_CreateConst, test_CreateConst_HardSentence);
-	tcase_add_test(tc_CreateConst, test_CreateConst_SentenceWithNumber);
-	tcase_add_test(tc_CreateConst, test_CreateConst_EnglishQuestion);
-	tcase_add_test(tc_CreateConst, test_CreateConst_NoSentence);
-	tcase_add_test(tc_CreateConst, test_CreateConst_BigWord);
-
-	suite_add_tcase(s, tc_CreateConst);
-
+	Check_Write_In_Data = tcase_create("Check_Write_In_Data");
+	Write_Struct_Dir = tcase_create("Write_Struct_Dir");
+	
+	tcase_add_test(Check_Write_In_Data, test_Check_Write_In_Data_NoArguments);
+	tcase_add_test(Check_Write_In_Data, test_Check_Write_In_Data_NoCorentEnghtArg);
+	tcase_add_test(Check_Write_In_Data, test_Check_Write_In_Data_NoActualArg);
+	tcase_add_test(Check_Write_In_Data, test_Check_Write_In_Data_TrueData);
+	
+	suite_add_tcase(s, Check_Write_In_Data);
+	
+	tcase_add_test(Write_Struct_Dir, test_Write_Struct_Dir_DirFiles);
+	tcase_add_test(Write_Struct_Dir, test_Write_Struct_Dir_DirInDir);
+	
+	suite_add_tcase(s, Write_Struct_Dir);
+	
 	return s;
 }
 

@@ -40,21 +40,67 @@
 
 */
 
-int Check_Write_In_Data(char *arr_input_date, FILE *output_file, DIR *input_dir)
+int Check_Write_In_Data(int number_arguments,char *arr_arguments[])
 {
-	return 0;
+	FILE *output_file;
+	DIR *input_dir;
+	
+	if(number_arguments > 1)
+	{	
+		if(number_arguments != 3)
+			printf("Ви ввели некоректну кількість даних");
+		else
+		{	
+			output_file = fopen(*(arr_arguments + 2), "w");
+			input_dir = opendir(*(arr_arguments + 1));
+		
+			if(output_file == NULL || input_dir == NULL )
+				printf("Не можливо отримати доступ до файлу або дерикторії");
+			else
+				return 0;
+		}		
+	}
+	else	
+		printf("Ви не ввели ніякі дані");
+		
+	return 1;
 }
 
-int Create_Struct_Dir(DIR *input_dir, struct dirent *elemets_in_dir, char **arr_out_data)
-{
-	return 0;
+int Write_Struct_Dir(char arg_for_file[],char arg_for_dir[])
+{		
+	FILE *output_file = fopen(arg_for_file, "a");
+	DIR *input_dir = opendir(arg_for_dir);
+	struct dirent *elements;
+	int number_elements = 0;
+	
+	elements = readdir(input_dir);
+	while(elements != NULL)
+	{	
+		number_elements++;
+		
+		if(elements->d_type == DT_DIR && strcmp(elements->d_name, ".") != 0 && strcmp(elements->d_name, "..") != 0)
+		{
+			char path[PATH_MAX] = {0};
+			
+			strcat(path, arg_for_dir);
+			strcat(path, "/");
+			strcat(path, elements->d_name);
+			
+			number_elements += Write_Struct_Dir(arg_for_file, path);
+		}
+		fprintf(output_file,"%s/%s\n", arg_for_dir,elements->d_name);
+		elements = readdir(input_dir);
+		
+	}
+	
+	number_elements -= 2;
+	fprintf(output_file,"\n\n");
+	
+	closedir(input_dir);
+	fclose(output_file);
+	
+	return number_elements;
 }
-
-int Write_In_File(FILE *output_file, char **arr_out_data)
-{
-	return 0;
-}
-
 
 
 

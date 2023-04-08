@@ -11,8 +11,6 @@
  \return Повертає сформоване число або нуль.
 */
 
-int Check_Write_In_Data(char *arr_input_date[], FILE *output_file, DIR *input_dir);
+int Check_Write_In_Data(int number_arguments, char *arr_arguments[]);
 
-int Create_Struct_Dir(DIR *input_dir, struct dirent *elemets_in_dir, char *arr_out_data[]);
-
-int Write_In_File(FILE *output_file, char *arr_out_data[]);
+int Write_Struct_Dir(char arg_for_file[],char arg_for_dir[]);
