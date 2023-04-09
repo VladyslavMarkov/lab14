@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 {
 	char arg_for_file[PATH_MAX] = {0};
 	char arg_for_dir[PATH_MAX] = {0};
-	int number_elements;
+	int number_elements = 0;
 	
 	printf("\nАвтор:Марков Владислав\nГрупа:КН-922Б\nНомер лабараторної роботи:14\nТема:Строки Взаємодія з файлами\n\n");
 	printf("Вивести структуру файлів та каталогів, як це робить утиліта Linux tree.\n\n");
@@ -51,11 +51,19 @@ int main(int argc, char* argv[])
 	strcat(arg_for_file,*(argv + 2));
 	strcat(arg_for_dir,*(argv + 1));
 	
-	number_elements = Write_Struct_Dir(arg_for_file, arg_for_dir);
 	
-	FILE *output_file = fopen(argv[2], "a");
-	fprintf(output_file,"\nВсього файлів у дерикторії та каталогах:%d", number_elements);
+	FILE *output_file = fopen(arg_for_file, "a");
+	fprintf(output_file,"%s\n|\n", arg_for_dir);
 	fclose(output_file);
+	
+	number_elements = Write_Struct_Dir(arg_for_file, arg_for_dir, arg_for_dir);
+	
+	FILE *out_file = fopen(arg_for_file, "a");
+	fprintf(output_file,"\nВсього файлів та каталогів у дерикторії :%d", number_elements);
+	fclose(out_file);
+	
+
+	
 	
 	return 0;
 }

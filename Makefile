@@ -12,7 +12,7 @@ V_LAGS = valgrind
                              #(basic)#
                              
 main_all: clean prep compile
-	./dist/main.bin . dist/text.txt
+	./dist/main.bin ./test/test\(DirInDir\) dist/text.txt
 
 test_all: clean prep test.bin test
 
