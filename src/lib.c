@@ -67,54 +67,49 @@ int Check_Write_In_Data(int number_arguments,char *arr_arguments[])
 	return 1;
 }
 
-int Write_Struct_Dir(char arg_for_file[],char present_dir[],char parents_dir[])
+int* Write_Struct_Dir(char arg_for_file[],char present_dir[],char parents_dir[])
 {		
 	DIR *input_dir = opendir(present_dir);
 	struct dirent *elements;
-	int number_elements = 0;
-	
+	int number_elements[] = {0,0};
+	int *point_num_elements;
+	char element[255];
 	
 	elements = readdir(input_dir);
 	while(elements != NULL)
 	{	
-		number_elements++;
+		strcat(element, elements->d_name);
 		
 		if(elements->d_type == 4 && strcmp(elements->d_name, ".") != 0 && strcmp(elements->d_name, "..") != 0)
-		{
+		{	
 			char path[PATH_MAX] = {0};
-			char element[255];
 			int type = elements->d_type;
 			
-			strcat(element, elements->d_name);
 			strcat(path, present_dir);
 			strcat(path, "/");
 			strcat(path, elements->d_name);
 			
 			Write_Out_File(element, type, arg_for_file, present_dir, parents_dir);
 			
-			memset(element, 0, 255);
+			point_num_elements = Write_Struct_Dir(arg_for_file, path, parents_dir);
 			
-			number_elements += Write_Struct_Dir(arg_for_file, path, parents_dir);
+			*(number_elements) += *(point_num_elements) + 1;
+			*(number_elements + 1) += *(point_num_elements + 1);
 		}
 		if(elements->d_type != 4 && strcmp(elements->d_name, ".") != 0 && strcmp(elements->d_name, "..") != 0)
 		{	
-			char element[255];
-			
-			strcat(element, elements->d_name);
-		
+			*(number_elements + 1) += 1;
 			Write_Out_File(element, 0,arg_for_file, present_dir, parents_dir);
+		}	
 			
-			memset(element, 0, 255);
-		}
+		memset(element, 0, 255);
 		elements = readdir(input_dir);
 	}
 		
-	number_elements -= 2;
-	
 	closedir(input_dir);
 	
-	
-	return number_elements;
+	point_num_elements = number_elements;
+	return point_num_elements;
 }
 
 int Write_Out_File(char element[],int type,char arg_for_file[],char present_dir[],char parents_dir[])
@@ -122,20 +117,17 @@ int Write_Out_File(char element[],int type,char arg_for_file[],char present_dir[
 	int entry_par_path = 0;
 	int entry_pre_path = 0;
 	int number_tab = 0;
-	
 	FILE *output_file = fopen(arg_for_file, "a");
 	
 	for(int i = 0; parents_dir[i] != '\0';i++)
-	{
 		if(parents_dir[i] == '/')
-			entry_par_path++;		
-	}
+			entry_par_path++;	
+	
 	
 	for(int i = 0; present_dir[i] != '\0';i++)
-	{
 		if(present_dir[i] == '/')
-			entry_pre_path++;
-	}
+			entry_pre_path++;	
+	
 	
 	if(entry_pre_path >= entry_par_path)
 	{
@@ -143,33 +135,26 @@ int Write_Out_File(char element[],int type,char arg_for_file[],char present_dir[
 		
 		if(type == 4)
 		{	
-		
 			for(int i = 0; i < number_tab; i++)
 				fprintf(output_file,"|\t");
+				
+			fprintf(output_file,"|");
 			
 			if(number_tab == 0)
 				number_tab++;
-			
-			fprintf(output_file,"|");
-			while(number_tab + 6 != 0)
-			{
+				
+			for(int i = 0; i < number_tab + 6; i++)
 				fprintf(output_file,"-");
-				number_tab--;
-			}
 			
-			fprintf(output_file,"%s\n", element);
-			fclose(output_file);
-			
-			return 0;
+			fprintf(output_file,"%s\n", element);	
 		}
-		
-		while(number_tab != 0)
-		{
-			fprintf(output_file,"|\t");
-			number_tab--;
+		else
+		{	
+			for(int i = 0; i < number_tab; i++)
+				fprintf(output_file,"|\t");
+				
+			fprintf(output_file,"|-%s\n", element);	
 		}
-			
-		fprintf(output_file,"|-%s\n", element);	
 	}
 	else
 		return 1;
